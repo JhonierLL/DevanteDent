@@ -3,4 +3,4 @@ El proyecto permite:
 - Consultar citas guardadas
 - Modificar y eliminar citas
 - Guardar los datos en cookies del navegador
-Proyecto realizado como práctica del módulo Desarrollo Web en Entorno Cliente.
+- Proyecto realizado como práctica del módulo Desarrollo Web en Entorno Cliente.
