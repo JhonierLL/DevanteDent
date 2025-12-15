@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DavanteDent - Gestión de Citas</title>
+    <link rel="stylesheet" href="CSS.css">
+
+
+
+</head>    
+
+<body>
+
+    <header>
+
+    <a href="index.html"><img src="IMG/logo.png" alt="DevanteDent" class="logo"></a>
+
+    <h1>PIDE TU CITA</h1>
+
+    
+    </header>
+
+    <main>
+
+        
+    <fieldset>    
+
+        <nav>
+        
+        <a href="index.html">Inicio</a>
+        <a href="cita.html">Pide tu cita</a>
+        <a href="consulta.html">Consulta de citas</a>
+
+        </nav>
+
+    </fieldset>
+
+    <br>
+
+    <form id="formCita">
+
+        <fieldset>
+
+            <legend>Datos personales</legend>
+
+            <label for="nombre">Nombre </label><br>
+            <input type="text" name="nombre" id="nombre" placeholder="Nombre" required><br><br>
+
+            <label for="apellido">Apellidos</label><br>
+            <input type="text" name="apellido" id="apellido" placeholder="Apellidos" required><br><br>
+
+            <label for="edad">Fecha nacimiento</label><br>
+            <input type="date" name="edad" id="edad" required><br><br>
+
+            <laber for="dni">DNI</label><br>
+            <input type="text" name="dni" id="dni" pattern="[0-9]{8}[A-Za-z]" placeholder="12345678X" size="9" maxlength="9" required><br><br>
+
+            <label for="email">Email</label><br>
+            <input type="email" name="email" id="email" placeholder="ejemplo@gmail.com" required><br><br>
+
+            <label for="telefono">Teléfono</label><br>
+            <input type="tel" name="telefono" id="telefono" pattern="[0-9]{9}" placeholder="xxxxxxxxx" size="9" maxlength="9" required><br><br>
+
+            <label for="fecha">Fecha de la cita</label><br>
+            <input type="datetime-local" id="cita" name="cita" min="" required><br><br>
+
+            <label for="Observaciones">Observaciones</label><br><br>
+            <textarea name="Observaciones" id="Observaciones" placeholder="Escribe tu mensaje aquí..." cols="60" rows="8" maxlength="340" ></textarea><br><br>
+
+            <input type="submit" value="Enviar">
+
+        </fieldset>
+
+    </main>
+
+    <footer></footer>
+
+    <script>
+    const ahora = new Date();
+
+    const año = ahora.getFullYear();
+    const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+    const dia = String(ahora.getDate()).padStart(2, "0");
+    const hora = String(ahora.getHours()).padStart(2, "0");
+    const minutos = String(ahora.getMinutes()).padStart(2, "0");
+
+    const fechaMin = `${año}-${mes}-${dia}T${hora}:${minutos}`;
+
+    document.getElementById("cita").min = fechaMin;
+
+    /* ---------- FUNCIONES COOKIES ---------- */
+    function guardarCitaCookie(id, datos) {
+        document.cookie = `cita_${id}=${datos}; path=/`;
+    }
+
+    function obtenerCitas() {
+        let cookies = document.cookie.split("; ");
+        let citas = [];
+
+        cookies.forEach(c => {
+            if (c.startsWith("cita_")) {
+                let [clave, valor] = c.split("=");
+                let id = clave.replace("cita_", "");
+
+                let campos = valor.split("|");
+
+                citas.push({
+                    id: id,
+                    nombre: campos[0],
+                    apellidos: campos[1],
+                    dni: campos[2],
+                    telefono: campos[3],
+                    nacimiento: campos[4],
+                    fechaCita: campos[5],
+                    observaciones: campos[6]
+                });
+            }
+        });
+
+        return citas;
+    }
+
+    function eliminarCita(id) {
+        document.cookie = `cita_${id}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    }
+
+    /* ------ CARGAR DATOS SI SE ESTÁ EDITANDO ------ */
+    const idEditar = localStorage.getItem("editarID");
+
+    if (idEditar) {
+        let citas = obtenerCitas();
+        let c = citas.find(x => x.id == idEditar);
+
+        if (c) {
+            document.getElementById("nombre").value = c.nombre;
+            document.getElementById("apellido").value = c.apellidos;
+            document.getElementById("dni").value = c.dni;
+            document.getElementById("telefono").value = c.telefono;
+            document.getElementById("edad").value = c.nacimiento;
+            document.getElementById("cita").value = c.fechaCita;
+            document.getElementById("Observaciones").value = c.observaciones;
+        }
+    }
+
+    /* ---------- EVENTO SUBMIT ---------- */
+    document.getElementById("formCita").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const id = idEditar ? idEditar : Date.now();
+
+        const datos =
+            document.getElementById("nombre").value + "|" +
+            document.getElementById("apellido").value + "|" +
+            document.getElementById("dni").value + "|" +
+            document.getElementById("telefono").value + "|" +
+            document.getElementById("edad").value + "|" +
+            document.getElementById("cita").value + "|" +
+            document.getElementById("Observaciones").value;
+
+        guardarCitaCookie(id, datos);
+
+        localStorage.removeItem("editarID");
+
+        alert("Cita guardada correctamente");
+        window.location.href = "consulta.html";
+    });
+
+    </script>
+
+</body>
