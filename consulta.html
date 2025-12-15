@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DavanteDent - Gestión de Citas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS.css">
+
+</head>    
+
+<body>
+
+    <header>
+
+    <a href="index.html"><img src="IMG/logo.png" alt="DevanteDent" class="logo"></a>
+
+    <h1>CONSULTA DE CITAS</h1>
+
+    
+    </header>
+
+    <main>
+
+        
+    <fieldset>    
+
+        <nav>
+
+        <a href="index.html">Inicio</a>
+        <a href="cita.html">Pide tu cita</a>
+        <a href="consulta.html">Consulta de citas</a>
+
+        </nav>
+
+    </fieldset>
+
+    <br>
+
+    <table border="1" id="tabla">
+
+    <thead>
+
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Fecha Cita</th>
+            
+        </tr>
+
+    </thead>
+
+    <tbody id="tbody"></tbody>
+
+    </table>
+
+
+    </main>
+
+    <footer></footer>
+
+    <script>
+
+        function obtenerCitas() {
+        let cookies = document.cookie.split("; ");
+        let citas = [];
+
+        cookies.forEach(c => {
+        if (c.startsWith("cita_")) {
+            let [clave, valor] = c.split("=");
+            let id = clave.replace("cita_", "");
+
+            let campos = valor.split("|");
+
+            citas.push({
+                id: id,
+                nombre: campos[0],
+                apellidos: campos[1],
+                dni: campos[2],
+                telefono: campos[3],
+                nacimiento: campos[4],
+                fechaCita: campos[5],
+                observaciones: campos[6]
+            });
+            }
+        });
+
+        return citas;
+
+    }
+
+    function eliminar(id) {
+    document.cookie = `cita_${id}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    location.reload();
+    }
+
+    function editar(id) {
+    localStorage.setItem("editarID", id);
+    window.location.href = "cita.html";
+    }
+
+    let citas = obtenerCitas();
+    let tbody = document.getElementById("tbody");
+
+    if (citas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6">Dato vacío</td></tr>`;
+    } 
+    
+    else {
+    citas.forEach((c, i) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${c.nombre} ${c.apellidos}</td>
+                <td>${c.dni}</td>
+                <td>${c.telefono}</td>
+                <td>${c.fechaCita}</td>
+                <td>
+                    <button onclick="editar(${c.id})">Editar</button>
+                    <button onclick="eliminar(${c.id})">Eliminar</button>
+                </td>
+            </tr>`;
+    });
+    }
+   
+
+</script>
+
+</body>
+
+</html>
+
+
