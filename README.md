@@ -1,2 +1,6 @@
-# DevanteDent
-Proyecto de enfoque - Desarrollo web en entorno cliente 
+El proyecto permite:
+- Crear nuevas citas
+- Consultar citas guardadas
+- Modificar y eliminar citas
+- Guardar los datos en cookies del navegador
+Proyecto realizado como práctica del módulo Desarrollo Web en Entorno Cliente.
